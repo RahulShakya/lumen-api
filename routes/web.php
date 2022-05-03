@@ -20,11 +20,22 @@ $router->get('/key', function() {
     return \Illuminate\Support\Str::random(32);
 });
 
-$router->group(['prefix'=>'v1'], function() use($router){
+$router->group(['middleware' => 'auth','prefix'=>'v1'], function() use($router){
     $router->get('/items', 'ProductController@index');
     $router->post('/items', 'ProductController@create');
     $router->get('/items/{id}', 'ProductController@show');
     $router->put('/items/{id}', 'ProductController@update');
     $router->delete('/items/{id}', 'ProductController@destroy');
 
+});
+
+$router->group(['middleware' => 'auth','prefix' => 'api'], function ($router) 
+{
+    $router->get('me', 'AuthController@me');
+});
+
+$router->group(['prefix' => 'v1'], function () use ($router) 
+{
+   $router->post('register', 'AuthController@register');
+   $router->post('login', 'AuthController@login');
 });
